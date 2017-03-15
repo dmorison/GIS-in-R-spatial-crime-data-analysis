@@ -5,12 +5,20 @@ library(rgdal)
 libs <- c("maps", "mapdata", "mapproj", "maptools", "sp", "ggmap")
 lapply(libs, library, character.only = TRUE)
 
-testset <- read.csv("Data/2016-01/2016-01-city-of-london-street.csv")
-dataset <- testset[which(complete.cases(testset$Longitude)), ]
+### Variables to keep
+retain <- c("Month", "Longitude", "Latitude", "LSOA.code", "LSOA.name", "Crime.type")
+### Import the City of London dataset
+city.init <- read.csv("Data/city-of-london-police-coord-data/2016-12/2016-12-city-of-london-street.csv")
+city <- city.init[which(complete.cases(city.init$Longitude)), ]
+city <- city[retain]
+### Import the Met dataset
+met.init <- read.csv("Data/met-police-coord-data/2016-12/2016-12-metropolitan-street.csv")
+met <- met.init[which(complete.cases(met.init$Longitude)), ]
+met <- met[retain]
 
 ###
 # map("world2Hires", "UK")
-# points(mapproject(x = testset$Longitude, y = testset$Latitude))
+# points(mapproject(x = city.init$Longitude, y = city.init$Latitude))
 
 ###
 dir_1 <- "References/Creating-maps-in-R-master/Creating-maps-in-R-master/data/"
@@ -18,32 +26,32 @@ dir_2 <- "Data/statistical-gis-boundaries-london/ESRI/"
 
 ldn1 <- readOGR(file.path(dir_1), layer = "london_sport")
 plot(ldn1)
-points(dataset.df$Longitude, dataset.df$Latitude) # first have to transform the coords as below
+points(city.df$Longitude, city.df$Latitude) # first have to transform the coords as below
 
 ### wrong projections
 map1 <- ggplot(ldn1)
 map1 <- map1 + geom_polygon(aes(x = long, y = lat, group = group))
-map1 + geom_point(data = testset, aes(x = Longitude, y = Latitude), colour = "red")
+map1 + geom_point(data = city.init, aes(x = Longitude, y = Latitude), colour = "red")
 ####################
 
 proj4string(ldn1) <- CRS("+init=epsg:27700")
 ldn1.wgs84 <- spTransform(ldn1, CRS("+init=epsg:4326"))
 ggplot(ldn1.wgs84) + geom_polygon(aes(x = long, y = lat, group = group)) +
-  geom_point(data = dataset, aes(x = Longitude, y = Latitude), colour = "red")
+  geom_point(data = city, aes(x = Longitude, y = Latitude), colour = "red")
 
 ### transforming coordinates ###
-class(dataset)
-coordinates(dataset) <- ~Longitude+Latitude
-class(dataset)
-proj4string(dataset) <- CRS("+init=epsg:4326")
+class(city)
+coordinates(city) <- ~Longitude+Latitude
+class(city)
+proj4string(city) <- CRS("+init=epsg:4326")
 
-dataset <- spTransform(dataset, CRS(proj4string(ldn1)))
-identical(proj4string(ldn1), proj4string(dataset))
-dataset.df <- data.frame(dataset)
+city <- spTransform(city, CRS(proj4string(ldn1)))
+identical(proj4string(ldn1), proj4string(city))
+city.df <- data.frame(city)
 
 map2 <- ggplot()
 map2 + geom_polygon(data = ldn1, aes(x = long, y = lat, group = group)) +
-  geom_point(data = dataset.df, aes(x = Longitude, y = Latitude), colour = "red")
+  geom_point(data = city.df, aes(x = Longitude, y = Latitude), colour = "red")
 ##########################################################
 
 # proj4string(ldn1) <- CRS("+init=epsg:27700")
