@@ -16,6 +16,14 @@ met.init <- read.csv("Data/met-police-coord-data/2016-12/2016-12-metropolitan-st
 met <- met.init[which(complete.cases(met.init$Longitude)), ]
 met <- met[retain]
 
+all <- rbind(city, met)
+all <- all[which(all$Latitude > 51.275), ]
+all <- all[which(all$Latitude < 51.7), ]
+all <- all[which(all$Longitude > -0.53), ]
+all <- all[which(all$Longitude < 0.35), ]
+
+df <- all
+
 ###
 # map("world2Hires", "UK")
 # points(mapproject(x = city.init$Longitude, y = city.init$Latitude))
@@ -26,32 +34,32 @@ dir_2 <- "Data/statistical-gis-boundaries-london/ESRI/"
 
 ldn1 <- readOGR(file.path(dir_1), layer = "london_sport")
 plot(ldn1)
-points(city.df$Longitude, city.df$Latitude) # first have to transform the coords as below
+points(df.t$Longitude, df.t$Latitude) # first have to transform the coords as below
 
 ### wrong projections
 map1 <- ggplot(ldn1)
 map1 <- map1 + geom_polygon(aes(x = long, y = lat, group = group))
-map1 + geom_point(data = city.init, aes(x = Longitude, y = Latitude), colour = "red")
+map1 + geom_point(data = df, aes(x = Longitude, y = Latitude), colour = "red")
 ####################
 
 proj4string(ldn1) <- CRS("+init=epsg:27700")
 ldn1.wgs84 <- spTransform(ldn1, CRS("+init=epsg:4326"))
 ggplot(ldn1.wgs84) + geom_polygon(aes(x = long, y = lat, group = group)) +
-  geom_point(data = city, aes(x = Longitude, y = Latitude), colour = "red")
+  geom_point(data = df, aes(x = Longitude, y = Latitude), colour = "red")
 
 ### transforming coordinates ###
-class(city)
-coordinates(city) <- ~Longitude+Latitude
-class(city)
-proj4string(city) <- CRS("+init=epsg:4326")
+class(df)
+coordinates(df) <- ~Longitude+Latitude
+class(df)
+proj4string(df) <- CRS("+init=epsg:4326")
 
-city <- spTransform(city, CRS(proj4string(ldn1)))
-identical(proj4string(ldn1), proj4string(city))
-city.df <- data.frame(city)
+df <- spTransform(df, CRS(proj4string(ldn1)))
+identical(proj4string(ldn1), proj4string(df))
+df.t <- data.frame(df)
 
 map2 <- ggplot()
 map2 + geom_polygon(data = ldn1, aes(x = long, y = lat, group = group)) +
-  geom_point(data = city.df, aes(x = Longitude, y = Latitude), colour = "red")
+  geom_point(data = df.t, aes(x = Longitude, y = Latitude), colour = "red")
 ##########################################################
 
 # proj4string(ldn1) <- CRS("+init=epsg:27700")
