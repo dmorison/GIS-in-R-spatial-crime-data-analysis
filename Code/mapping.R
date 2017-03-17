@@ -38,7 +38,7 @@ ldn1 <- readOGR(file.path(dir_1), layer = "london_sport")
 
 proj4string(ldn1) <- CRS("+init=epsg:27700")
 ldn1.wgs84 <- spTransform(ldn1, CRS("+init=epsg:4326"))
-ggplot(ldn1.wgs84) + geom_polygon(aes(x = long, y = lat, group = group)) +
+ggplot(ldn1.wgs84) + geom_polygon(aes(x = long, y = lat, group = group), fill = "white", colour = "black") +
   geom_point(data = bike, aes(x = Longitude, y = Latitude), colour = "red") +
   theme(axis.title = element_blank(), text = element_text(size = 14, face = "bold")) +
   labs(title = "Bicycle theft in Greater London - December 2016")
