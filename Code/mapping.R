@@ -42,7 +42,13 @@ ggplot(ldn1.wgs84) + geom_polygon(aes(x = long, y = lat, group = group), fill = 
   geom_point(data = bike, aes(x = Longitude, y = Latitude), colour = "red") +
   theme(axis.title = element_blank(), text = element_text(size = 14, face = "bold")) +
   labs(title = "Bicycle theft in Greater London - December 2016")
-#  scale_colour_manual(values = rainbow(14))
+# plot the area codes
+ggplot(ldn1.wgs84) + geom_polygon(aes(x = long, y = lat, group = group)) +
+  geom_point(data = all, aes(x = Longitude, y = Latitude, colour = LSOA.name)) +
+  theme(axis.title = element_blank(), text = element_text(size = 14, face = "bold"), legend.position = "none") +
+  scale_colour_manual(values = rainbow(4991)) +
+  labs(title = "Boroughs of London distinguished by crime incidences",
+       subtitle = "Shading of colours within each borough represent the localised areas")
 
 ### wrong projections
 map1 <- ggplot(ldn1)
