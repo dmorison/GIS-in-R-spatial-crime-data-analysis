@@ -8,7 +8,8 @@ crimeTypes <- read.csv("Data/crime-types.csv")
 allvars <- ncol(crimeTypes)
 varFrom <- 2
 varTo <- allvars
-dataTrain <- crimeTypes[, varFrom:varTo]
+vars <- c(2, 3, 6, 14)
+dataTrain <- crimeTypes[, vars]
 dataTrainMatrix <- as.matrix(scale(dataTrain))
 names(dataTrainMatrix) <- names(dataTrain)
 
@@ -16,7 +17,7 @@ somGrid <- somgrid(xdim = 20, ydim = 20, topo = "hexagonal")
 
 system.time(somModel <- som(dataTrainMatrix,
                 grid = somGrid,
-                rlen = 200,
+                rlen = 400,
                 alpha = c(0.05,0.01),
                 keep.data = TRUE))
 
@@ -33,10 +34,11 @@ plot(somModel, type = "counts", palette.name = coolBlueHotRed)
 plot(somModel, type = "quality", palette.name = coolBlueHotRed)
 plot(somModel, type = "dist.neighbours", palette.name=grey.colors)
 
-for(i in (varFrom - 1):(varTo - 1)) {
+for(i in 1:length(vars)) {
   print(i)
   pTitle <- colnames(getCodes(somModel, 1))[i]
-  png(file.path(paste0('Plots/SOM-output/20x20_r200/20x20_r200_', pTitle, '.png')), width = 824, height = 562)
+  png(file.path(paste0('Plots/SOM-output/20x20_r400_vars-2-3-6-14/20x20_r200_', pTitle, '.png')),
+      width = 796, height = 562)
   plot(somModel, type = "property", property = getCodes(somModel, 1)[, i],
        main = pTitle, palette.name = coolBlueHotRed)
   dev.off()
