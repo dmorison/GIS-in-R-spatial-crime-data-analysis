@@ -1,5 +1,5 @@
 setwd("C:/Users/davem/Projects/201703_crime-data/")
-libs <- c("ggplot2", "reshape2")
+libs <- c("reshape2")
 lapply(libs, library, character.only = TRUE)
 
 importdata <- function(dirs) {
@@ -35,11 +35,12 @@ importdata <- function(dirs) {
 }
 
 crimes <- importdata(c("city-of-london-police-coord-data", "met-police-coord-data"))
-crimeTypes <- dcast(crimes, LSOA.name ~ Crime.type, fun.aggregate = sum)
+crimeTypes <- dcast(crimes, LSOA.name ~ Crime.type, value.var = "Crime.type")
 colnames(crimeTypes) <- c("LSOA_name", "anti_social_behaviour", "bicycle_theft", "burglary",
                           "criminal_damage_and_arson", "drugs", "other_crime", "other_theft",
                           "possession_of_weapons", "public_order", "robbery", "shoplifting",
                           "theft_from_the_person", "vehicle_crime", "violence_and_sexual_offences")
 
-ggplot(crimeTypes, aes(x = drugs, y = bicycle_theft)) + geom_point()
+write.csv(crimeTypes, file = "Data/crime-types.csv", row.names = FALSE)
+# ggplot(crimeTypes, aes(x = drugs, y = bicycle_theft)) + geom_point()
 
