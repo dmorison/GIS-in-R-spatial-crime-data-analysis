@@ -77,12 +77,12 @@ outputSOM <- function(file, folder) {
 # Variable to select up to the last variable
 allvars <- ncol(crimeTypes)
 # Initiate variable to model. First one can only start from 2
-vars <- c(2:allvars)
+vars <- c(2,3,9,14)
 dataTrain <- crimeTypes[, vars]
 # CHOOSE INPUT VALUES FOR SOM TRAINING. First run the trainSOM function
 somModel <- trainSOM(c(20,20), 200)
 # CHOOSE FILE AND FOLDER INPUTS. First run the outputSOM function
-result <- outputSOM("20x20_r200_", "vars-all")
+result <- outputSOM("20x20_r200_", "vars-2-3-9-14")
 
 
 
