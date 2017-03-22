@@ -5,10 +5,8 @@ lapply(libs, library, character.only = TRUE)
 crimeTypes <- read.csv("Data/crime-types.csv")
 
 # SOM training function
-trainSOM <- function(dims, lrn) {
+trainSOM <- function(dims, lrn, file, folder) {
   dataTrainMatrix <- as.matrix(scale(dataTrain))
-  names(dataTrainMatrix) <- names(dataTrain)
-  print(dataTrainMatrix[1:6, ])
   
   somGrid <- somgrid(xdim = dims[1], ydim = dims[2], topo = "hexagonal")
   
@@ -18,8 +16,12 @@ trainSOM <- function(dims, lrn) {
                   alpha = c(0.05,0.01),
                   keep.data = TRUE)
   
-  print(model)
   summary(model)
+  dataTrainDf <- data.frame(dataTrainMatrix)
+  dataTrainTable <- data.frame(cbind(crimeTypes[, 1], dataTrainDf, model$unit.classif))
+  print(dataTrainTable[1:6, ])
+  write.csv(dataTrainTable, file = file.path(paste0('Plots/SOM-output/', file, folder, '/', file, folder,
+                                                     '_scaled.csv')), row.names = FALSE)
   
   return(model)
 }
@@ -31,19 +33,21 @@ coolBlueHotRed <- function(n, alpha = 1) {
 
 # SOM output function
 outputSOM <- function(file, folder) {
-  print(somModel$unit.classif[1:6])
-  print(getCodes(somModel, 1)[somModel$unit.classif[1:6], ])
+  #print(somModel$unit.classif[1:6])
+  #print(getCodes(somModel, 1)[somModel$unit.classif[1:6], ])
+  write.csv(getCodes(somModel, 1), file = file.path(paste0('Plots/SOM-output/', file, folder, '/', file, folder,
+                                                           '_node-values.csv')), row.names = TRUE)
   
   resultTable <- data.frame(cbind(crimeTypes[, 1], dataTrain, somModel$unit.classif))
   print(summary(resultTable))
-  write.csv(resultTable, file = file.path(paste0('Plots/SOM-output/', file, folder, '/', file, folder, '.csv')),
-            row.names = FALSE)
+  write.csv(resultTable, file = file.path(paste0('Plots/SOM-output/', file, folder, '/', file, folder,
+                                                 '_unscaled.csv')), row.names = FALSE)
   
   nodeFreq <- aggregate(somModel$unit.classif, by = list(somModel$unit.classif), FUN = length)
   nodeFreq <- nodeFreq[order(-nodeFreq$x), ]
   print(nodeFreq[1:20, ])
-  write.csv(nodeFreq, file = file.path(paste0('Plots/SOM-output/', file, folder, '/', file, folder, '_node-frequencies',
-                                              '.csv')), row.names = FALSE)
+  write.csv(nodeFreq, file = file.path(paste0('Plots/SOM-output/', file, folder, '/', file, folder,
+                                              '_node-frequencies.csv')), row.names = FALSE)
   
   png(file.path(paste0('Plots/SOM-output/', file, folder, '/', 'changes.png')), width = 796, height = 562)
   plot(somModel, type = "changes")
@@ -62,7 +66,7 @@ outputSOM <- function(file, folder) {
   dev.off()
   
   for(i in 1:length(vars)) {
-    print(i)
+    print(paste('Plot: ', i))
     pTitle <- colnames(getCodes(somModel, 1))[i]
     png(file.path(paste0('Plots/SOM-output/', file, folder, '/', file, pTitle, '.png')),
         width = 796, height = 562)
@@ -77,12 +81,15 @@ outputSOM <- function(file, folder) {
 # Variable to select up to the last variable
 allvars <- ncol(crimeTypes)
 # Initiate variable to model. First one can only start from 2
-vars <- c(2,3,9,14)
+vars <- c(2:allvars)
 dataTrain <- crimeTypes[, vars]
+# Set the file and folder to write output to
+dir_1 <- "10x10_r400_"
+dir_2 <- "vars-all"
 # CHOOSE INPUT VALUES FOR SOM TRAINING. First run the trainSOM function
-somModel <- trainSOM(c(20,20), 200)
+somModel <- trainSOM(c(10,10), 400, dir_1, dir_2)
 # CHOOSE FILE AND FOLDER INPUTS. First run the outputSOM function
-result <- outputSOM("20x20_r200_", "vars-2-3-9-14")
+result <- outputSOM(dir_1, dir_2)
 
 
 
