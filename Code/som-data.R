@@ -41,6 +41,10 @@ colnames(crimeTypes) <- c("LSOA_name", "anti_social_behaviour", "bicycle_theft",
                           "possession_of_weapons", "public_order", "robbery", "shoplifting",
                           "theft_from_the_person", "vehicle_crime", "violence_and_sexual_offences")
 
+crimesNoArea <- crimes[, c("Month", "Longitude", "Latitude", "Crime.type")]
+
+write.csv(crimes, file = "Data/crimes-2016-all.csv", row.names = FALSE)
+write.csv(crimesNoArea, file = "Data/crimes-2016-types.csv", row.names = FALSE)
 write.csv(crimeTypes, file = "Data/crime-types.csv", row.names = FALSE)
 # ggplot(crimeTypes, aes(x = drugs, y = bicycle_theft)) + geom_point()
 
