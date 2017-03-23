@@ -31,7 +31,8 @@ function(input, output) {
       geom_point(data = mapData, aes(x = Longitude, y = Latitude, colour = Crime.type)) +
       scale_colour_manual(values = rainbow(14)) +
       theme(text = element_text(size = 14, face = "bold")) +
-      labs(title = "Crime incidences for each month of 2016 in London")
+      labs(title = "Crime incidences for each month of 2016 in London",
+           x = "Longitude", y = "Latitude", colour = "Crime type")
     
   })
   
@@ -49,7 +50,8 @@ function(input, output) {
       scale_colour_manual(values = rainbow(14)) +
       theme(text = element_text(size = 14, face = "bold"),
             axis.text.x = element_text(angle = 60, hjust = 1)) +
-      labs(title = "Monthly crime totals for each month of 2016 in London")
+      labs(title = "Monthly crime totals for each month of 2016 in London",
+           colour = "Crime type")
     
   })
     
