@@ -1,6 +1,4 @@
-setwd("C:/Users/davem/Projects/201703_crime-data/")
-libs <- c("reshape2")
-lapply(libs, library, character.only = TRUE)
+library(reshape2)
 
 importdata <- function(dirs) {
   all <- NULL
@@ -15,18 +13,17 @@ importdata <- function(dirs) {
     currDir <- dir(file.path("Data", d))
     for(i in currDir) {
       currFilePath <- file.path("Data", d, i, paste0(i, "-", filename, ".csv"))
-      # print(currFilePath)
       currFile <- read.csv(currFilePath)
-      # print(dim(currFile))
+      
       currFileSub <- currFile[retain]
       currFileSub <- currFileSub[which(complete.cases(currFileSub)), ]
-      # print(dim(currFileSub))
       if(d == "met-police-coord-data") {
         currFileSub <- currFileSub[which(currFileSub$Latitude > 51.275), ]
         currFileSub <- currFileSub[which(currFileSub$Latitude < 51.7), ]
         currFileSub <- currFileSub[which(currFileSub$Longitude > -0.53), ]
         currFileSub <- currFileSub[which(currFileSub$Longitude < 0.35), ]
       }
+      
       print(dim(currFileSub))
       all <- rbind(all, currFileSub)
     }
@@ -46,5 +43,5 @@ crimesNoArea <- crimes[, c("Month", "Longitude", "Latitude", "Crime.type")]
 write.csv(crimes, file = "Data/crimes-2016-all.csv", row.names = FALSE)
 write.csv(crimesNoArea, file = "Data/crimes-2016-types.csv", row.names = FALSE)
 write.csv(crimeTypes, file = "Data/crime-types.csv", row.names = FALSE)
-# ggplot(crimeTypes, aes(x = drugs, y = bicycle_theft)) + geom_point()
+
 
