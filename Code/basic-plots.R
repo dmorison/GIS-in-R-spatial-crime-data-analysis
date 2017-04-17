@@ -1,8 +1,6 @@
 library(ggplot2)
 library(ggmap)
 
-setwd("C:/Users/davem/Projects/201703_crime-data")
-
 city <- read.csv("Data/city-of-london-police-coord-data/2016-01/2016-01-city-of-london-street.csv")
 
 # dataset <- data.frame(cbind(city$Longitude, city$Latitude, factor(city$Crime.type)))

@@ -1,8 +1,4 @@
-setwd("C:/Users/davem/Projects/201703_crime-data/")
-library(ggplot2)
-library(rgeos)
-library(rgdal)
-libs <- c("maps", "mapdata", "mapproj", "maptools", "sp", "ggmap")
+libs <- c("ggplot2", "rgeos", "rgdal", "maps", "mapdata", "mapproj", "maptools", "sp", "ggmap")
 lapply(libs, library, character.only = TRUE)
 
 ### Variables to keep

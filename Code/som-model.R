@@ -1,6 +1,5 @@
-setwd("C:/Users/davem/Projects/201703_crime-data/")
-libs <- c("kohonen")
-lapply(libs, library, character.only = TRUE)
+library(kohonen)
+
 # Import data
 crimeTypes <- read.csv("Data/crime-types.csv")
 
