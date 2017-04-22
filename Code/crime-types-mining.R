@@ -1,4 +1,3 @@
-setwd("C:/Users/davem/Projects/201703_crime-data/")
 library(stats)
 library(ggplot2)
 
