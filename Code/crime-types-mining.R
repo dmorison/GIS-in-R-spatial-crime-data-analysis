@@ -7,6 +7,14 @@ df <- read.csv("Data/crime-types.csv")
 # remove locations so dataset contains only the crime type variables 1:14
 df3 <- df[, -1]
 
+# finding the areas with the highest crime recording for each type of crime
+crimes <- colnames(df3)
+hc <- NULL
+for (i in 2:(length(crimes) + 1)) {
+  area <- df[which(df[, i] == max(df[, i])), ]
+  hc <- rbind(hc, data.frame(area))
+}
+
 # find variable describing the most variance
 summary(df3)
 df3.var <- apply(df3, 2, var)
