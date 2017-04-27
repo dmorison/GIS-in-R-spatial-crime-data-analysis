@@ -1,10 +1,14 @@
 library(stats)
+library(reshape2)
 library(ggplot2)
 library(ggbiplot)
 
 df <- read.csv("Data/crime-types.csv")
 # remove locations so dataset contains only the crime type variables 1:14
 df3 <- df[, -1]
+
+# test for low crime areas
+df[rowSums(df[, 2:15]) < 2, ]
 
 # finding the areas with the highest crime recording for each type of crime
 crimes <- colnames(df3)
@@ -13,6 +17,21 @@ for (i in 2:(length(crimes) + 1)) {
   area <- df[which(df[, i] == max(df[, i])), ]
   hc <- rbind(hc, data.frame(area))
 }
+# write.csv(hc, file = "Data/areas-with-max-crime-value-per-type.csv", row.names = FALSE)
+# boxplot of crime types
+df4 <- melt(df, id.vars = "LSOA_name")
+# boxplot stats
+bp.sts <- boxplot.stats(df4$value)$stats
+
+bp <- ggplot(df4, aes(x = variable, y = value))
+bp <- bp + geom_boxplot(outlier.colour = NA) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+  coord_cartesian(ylim = c(0, 125)) +
+  labs(x = "Crime type")
+print(bp)
+# finding correlation
+cor.m <- cor(df3)
+print(cor.m)
 
 # find variable describing the most variance
 summary(df3)
@@ -40,6 +59,8 @@ summary(pca2)
 pca2.1 <- pca2
 pca2.1$rotation <- -pca2.1$rotation
 pca2.1$x <- -pca2.1$x
+print(pca2.1)
+summary(pca2.1)
 # PCA basic biplot
 biplot(pca2.1, scale = 0)
 # PCA ggbiplot
